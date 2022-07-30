@@ -1,5 +1,8 @@
 # S3 Serve
 
+![CI/CD](https://github.com/github/docs/actions/workflows/node.js.yml/badge.svg)
+
+
 A node utility for serving files from S3. Compatible with Express, Fastify, NestJs, and more.
 
 Small & flexible. You decide what and how to send and receive.
