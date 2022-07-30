@@ -1,6 +1,6 @@
 {
   "name": "s3-serve",
-  "version": "0.0.0",
+  "version": "0.0.0-rc1",
   "author": "Abdullah Barhoum <https://github.com/AbdBarho>",
   "license": "MIT",
   "description": "A utility for serving files from S3",
