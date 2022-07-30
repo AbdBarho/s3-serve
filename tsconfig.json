@@ -1,0 +1,17 @@
+{
+  "extends": "@tsconfig/node16/tsconfig.json",
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "outDir": "./build",
+    "declaration": true,
+    "declarationMap": true,
+    "preserveWatchOutput": true
+  },
+  "buildOptions": {
+    "force": true
+  },
+  "include": ["src/**/*", "test/getS3.spec.ts", "test/headers.spec.ts"],
+  "exclude": ["node_modules", "**/*.spec.ts", "build/**/*"]
+}
