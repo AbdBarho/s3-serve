@@ -1,6 +1,9 @@
 # S3 Serve
 
-![CI/CD](https://github.com/AbdBarho/s3-serve/actions/workflows/node.js.yml/badge.svg)
+![node-version](https://img.shields.io/node/v/s3-serve?style=plastic) ![CI/CD](https://github.com/AbdBarho/s3-serve/actions/workflows/node.js.yml/badge.svg)
+[![npm version](https://badge.fury.io/js/s3-serve.svg)](https://badge.fury.io/js/s3-serve)
+
+![@aws-sdk/client-s3 version](https://img.shields.io/npm/dependency-version/s3-serve/peer/@aws-sdk/client-s3?style=plastic)
 
 
 A node utility for serving files from S3. Compatible with Express, Fastify, NestJs, and more.
@@ -10,6 +13,10 @@ Small & flexible. You decide what and how to send and receive.
 ## Install
 ```bash
 npm install s3-serve
+```
+this library has a *peer* dependency on `@aws-sdk/client-s3`, if not already installed, use the following:
+```bash
+npm install @aws-sdk/client-s3
 ```
 
 ## Getting Started
@@ -40,19 +47,26 @@ More elaborate example [at the end!](#complex-example)
 There are many libraries that can help in serving file from S3, such as [s3-server](https://www.npmjs.com/package/s3-server), [s3-autoindex](https://www.npmjs.com/package/s3-autoindex),[s3-proxy](https://www.npmjs.com/package/s3-proxy), [simple-s3-proxy](https://www.npmjs.com/package/simple-s3-proxy), [s3-files](https://www.npmjs.com/package/s3-files), [s3-streams](https://www.npmjs.com/package/s3-streams) and many more.
 Unfortunately, many of them are unmaintained, and the ones who are, are very restrictive in what the allow.
 
-This library aims to be as flexible as possible by giving the developer full control over the inputs and outputs of each request, while also reducing the amount of boilerplate required when working with `@aws-sdk/s3-client`.
+This library aims to be flexible by giving the developer full control over the inputs and outputs of each request, while also reducing the amount of boilerplate required when working with `@aws-sdk/s3-client`.
 
 
 
 ## API
 
-This library is written in TypeScript and typed thoroughly, VSCode intellisense alone may answer all your questions!
+VSCode intellisense by itself may answer all your questions!
 
-* _getS3(client: [S3 Client](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/classes/s3client.html), options: [GetObjectCommandInput](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/interfaces/getobjectcommandinput.html)): Promise\<[S3Response](./src/lib/S3Response.ts)>_<br/>
-Executes a [GetObjectCommand](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/classes/getobjectcommand.html) using the given client. Returns an [S3Response](./src/lib/S3Response.ts) which contains all information needed to serve the file.<br/>
+### **getS3**
+
+_getS3(client: [S3 Client](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/classes/s3client.html), options: [GetObjectCommandInput](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/interfaces/getobjectcommandinput.html)): Promise\<[S3Response](./src/lib/S3Response.ts)>_
+
+Executes a [GetObjectCommand](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/classes/getobjectcommand.html) using the given client. Returns an [S3Response](./src/lib/S3Response.ts) which contains all information needed to serve the file.
+
 Note: `getS3` does neither cache nor store anything in memory, the requested file in `S3Response.body` is a `Readable` stream that can be piped as a response.
-* _extractGetArgs(headers: object): object_<br/>
-  Extracts and converts relevant headers from a request, so they can be fed into the `GetObjectCommandInput`.
+
+### **extractGetArgs**
+_extractGetArgs(headers: object): object_
+
+Extracts and converts relevant headers from a request, so they can be fed into `getS3`'s `GetObjectCommandInput`.
 
 
 
