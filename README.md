@@ -1,6 +1,10 @@
 # S3 Serve
 
 ![CI/CD](https://github.com/AbdBarho/s3-serve/actions/workflows/node.js.yml/badge.svg)
+[![npm version](https://badge.fury.io/js/s3-serve.svg)](https://badge.fury.io/js/s3-serve)
+
+![node-version](https://img.shields.io/node/v/s3-serve?style=plastic)
+![@aws-sdk/client-s3 version](https://img.shields.io/npm/dependency-version/s3-serve/peer/@aws-sdk/client-s3?style=plastic)
 
 
 A node utility for serving files from S3. Compatible with Express, Fastify, NestJs, and more.
