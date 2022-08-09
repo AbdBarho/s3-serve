@@ -25,13 +25,13 @@ Minimal express example:
 ```js
 import express from 'express';
 import { S3Client } from '@aws-sdk/client-s3';
-import { getS3 } from 's3-serve';
+import { s3Get } from 's3-serve';
 
 const client = new S3Client(...);
 const app = express();
 
 app.get('/:file', async (req, res) => {
-  const { headers, body } = await getS3(client, {
+  const { headers, body } = await s3Get(client, {
     Bucket: 'my-bucket',
     Key: req.params.file
   });
@@ -55,18 +55,18 @@ This library aims to be flexible by giving the developer full control over the i
 
 VSCode intellisense by itself may answer all your questions!
 
-### **getS3**
+### **s3Get**
 
-_getS3(client: [S3 Client](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/classes/s3client.html), options: [GetObjectCommandInput](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/interfaces/getobjectcommandinput.html)): Promise\<[S3Response](./src/lib/S3Response.ts)>_
+_s3Get(client: [S3 Client](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/classes/s3client.html), options: [GetObjectCommandInput](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/interfaces/getobjectcommandinput.html)): Promise\<[S3Response](./src/lib/S3Response.ts)>_
 
 Executes a [GetObjectCommand](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/classes/getobjectcommand.html) using the given client. Returns an [S3Response](./src/lib/S3Response.ts) which contains all information needed to serve the file.
 
-Note: `getS3` does neither cache nor store anything in memory, the requested file in `S3Response.body` is a `Readable` stream that can be piped as a response.
+Note: `s3Get` does neither cache nor store anything in memory, the requested file in `S3Response.body` is a `Readable` stream that can be piped as a response.
 
 ### **extractGetArgs**
 _extractGetArgs(headers: object): object_
 
-Extracts and converts relevant headers from a request, so they can be fed into `getS3`'s `GetObjectCommandInput`.
+Extracts and converts relevant headers from a request, so they can be fed into `s3Get`'s `GetObjectCommandInput`.
 
 
 
@@ -76,10 +76,10 @@ Extracts and converts relevant headers from a request, so they can be fed into `
 Implement `express.static` but from s3 and with custom cache headers:
 
 ```js
-import { getS3, extractGetArgs } from 's3-serve';
+import { s3Get, extractGetArgs } from 's3-serve';
 
 app.get('/:key(*)', async (req, res) => {
-  const response = await getS3(client, {
+  const response = await s3Get(client, {
     Bucket,
     Key: req.params.key || 'index.html',
     ...extractGetArgs(req.headers),

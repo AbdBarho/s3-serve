@@ -14,7 +14,7 @@ export interface S3Response {
    *
    * ```js
    * app.get('/some-path', async (req, res) => {
-   *   const { body } = await getS3(client, { Bucket, Key });
+   *   const { body } = await s3Get(client, { Bucket, Key });
    *   body.pipe(res);
    * })
    * ```
@@ -24,7 +24,7 @@ export interface S3Response {
    *
    * ```js
    * fastify.get('/some-path', async (req, res) => {
-   *   const { body } = await getS3(client, { Bucket, Key });
+   *   const { body } = await s3Get(client, { Bucket, Key });
    *   return body;
    * });
    * ```
@@ -35,7 +35,7 @@ export interface S3Response {
    * ```js
    * \@Get('/some-path')
    * getFile() {
-   *   const { body } = await getS3(client, { Bucket, Key });
+   *   const { body } = await s3Get(client, { Bucket, Key });
    *   return new StreamableFile(body);
    * }
    * ```
@@ -54,7 +54,7 @@ export interface S3Response {
    *
    * ```js
    * app.get('/some-path', async (req, res) => {
-   *   const { body, headers } = await getS3(client, { Bucket, Key });
+   *   const { body, headers } = await s3Get(client, { Bucket, Key });
    *   res.set(headers);
    *   body.pipe(res);
    * })
@@ -64,7 +64,7 @@ export interface S3Response {
    *
    * ```js
    * fastify.get('/some-path', async (req, res) => {
-   *   const { body, headers } = await getS3(client, { Bucket, Key });
+   *   const { body, headers } = await s3Get(client, { Bucket, Key });
    *   res.headers(headers);
    *   return body;
    * });
@@ -88,7 +88,7 @@ export interface S3Response {
    * Fastify example:
    * ```js
    * fastify.get('/some-path', async (req, res) => {
-   *   const { body, headers, statusCode, statusMessage, error } = await getS3(client, { Bucket, Key });
+   *   const { body, headers, statusCode, statusMessage, error } = await s3Get(client, { Bucket, Key });
    *   if (error){
    *      console.error(error);
    *      res.status(statusCode);
@@ -110,7 +110,7 @@ export interface S3Response {
    * Fastify example:
    * ```js
    * fastify.get('/some-path', async (req, res) => {
-   *   const { body, headers, s3Headers } = await getS3(client, { Bucket, Key });
+   *   const { body, headers, s3Headers } = await s3Get(client, { Bucket, Key });
    *   res.headers({ ...s3Headers, ...headers });
    *   return body;
    * });
@@ -128,7 +128,7 @@ export interface S3Response {
    * The `error` object is whatever was thrown by the `S3Client.send` function.
    *
    * In the case where the request was not sent or no response received (for example when `S3Client`
-   * is not configured correctly or there is no internet connection, etc...), the `getS3` function
+   * is not configured correctly or there is no internet connection, etc...), the `s3Get` function
    * will re-throw the error from the `S3Client`, and won't return it as value.
    */
   error?: any;

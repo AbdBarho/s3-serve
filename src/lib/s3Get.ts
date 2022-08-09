@@ -16,7 +16,7 @@ import { S3Response } from './S3Response';
  * @returns response object, see {@link S3Response} for more info on the contents and usage.
  *
  */
-export const getS3 = async (client: S3Client, options: GetObjectCommandInput): Promise<S3Response> => {
+export const s3Get = async (client: S3Client, options: GetObjectCommandInput): Promise<S3Response> => {
   let body, metadata, error;
   try {
     const response = await client.send(new GetObjectCommand(options));
@@ -42,7 +42,7 @@ export const getS3 = async (client: S3Client, options: GetObjectCommandInput): P
  * example with express
  * ```js
  * app.get('/:file', async (req, res) => {
- *   const { headers, body } = await getS3(client, {
+ *   const { headers, body } = await s3Get(client, {
  *      Bucket,
  *      Key,
  *      ...extractGetArgs(req.headers)
@@ -51,7 +51,7 @@ export const getS3 = async (client: S3Client, options: GetObjectCommandInput): P
  * ```
  *
  * @param headers headers of an incoming request, usually from a browser.
- * @returns object containing addition parameters that could be passed to {@link getS3}
+ * @returns object containing addition parameters that could be passed to {@link s3Get}
  */
 export const extractGetArgs = (headers: IncomingHttpHeaders): Partial<GetObjectCommandInput> => {
   const output: Record<string, any> = {};

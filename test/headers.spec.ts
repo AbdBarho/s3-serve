@@ -1,5 +1,5 @@
 import { splitResponseHeaders } from '../src/lib/headers';
-import { extractGetArgs } from '../src/lib/getS3';
+import { extractGetArgs } from '../src/lib/s3Get';
 
 const standardHeaders = {
   'content-type': 'A',

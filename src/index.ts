@@ -1,1 +1,1 @@
-export { getS3, extractGetArgs } from './lib/getS3';
+export { s3Get, extractGetArgs } from './lib/s3Get';
