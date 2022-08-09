@@ -12,6 +12,6 @@
   "buildOptions": {
     "force": true
   },
-  "include": ["src/**/*", "test/getS3.spec.ts", "test/headers.spec.ts"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts", "build/**/*"]
 }

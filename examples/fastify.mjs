@@ -2,7 +2,7 @@ import Fastify from 'fastify';
 import { S3Client } from '@aws-sdk/client-s3';
 import dotenv from 'dotenv';
 
-import { getS3, extractGetArgs } from '../build/index.js';
+import { s3Get, extractGetArgs } from '../build/index.js';
 
 dotenv.config();
 
@@ -22,7 +22,7 @@ fastify.get('/*', async (req, res) => {
   if (Key === '') {
     Key = 'index.html';
   }
-  const { body, statusCode, headers } = await getS3(client, {
+  const { body, statusCode, headers } = await s3Get(client, {
     Bucket,
     Key,
     ...extractGetArgs(req.headers),

@@ -1,6 +1,6 @@
 import nock from 'nock';
 import { S3Client } from '@aws-sdk/client-s3';
-import { getS3 } from '../src/lib/getS3';
+import { s3Get } from '../src/lib/s3Get';
 import { IncomingMessage } from 'http';
 
 describe('ServeS3', () => {
@@ -25,7 +25,7 @@ describe('ServeS3', () => {
         Date: date.toString(),
       });
 
-    const { headers, body, s3Headers, statusCode, error } = await getS3(client, {
+    const { headers, body, s3Headers, statusCode, error } = await s3Get(client, {
       Bucket: 'bucket',
       Key: 'file.txt',
     });
