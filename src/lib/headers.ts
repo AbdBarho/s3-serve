@@ -1,8 +1,5 @@
 export type Headers = Record<string, string>;
 
-/**
- * @internal
- */
 export const splitResponseHeaders = (baseHeaders: Headers) => {
   const headers: Headers = {};
   const s3Headers: Headers = {};
@@ -17,9 +14,6 @@ export const splitResponseHeaders = (baseHeaders: Headers) => {
   return { headers, s3Headers };
 };
 
-/**
- * @internal
- */
 export const HEADER_TO_PARAM = {
   range: 'Range',
   'if-match': 'IfMatch',
@@ -30,9 +24,6 @@ export const HEADER_TO_PARAM = {
 
 const DATE_PARAMS = new Set(['IfModifiedSince', 'IfUnmodifiedSince']);
 
-/**
- * @internal
- */
 export const valueToType = (param: string, value: any) => {
   if (DATE_PARAMS.has(param)) {
     return new Date(value);

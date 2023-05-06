@@ -3,7 +3,6 @@
 ![node-version](https://img.shields.io/node/v/s3-serve?style=plastic) ![CI/CD](https://github.com/AbdBarho/s3-serve/actions/workflows/node.js.yml/badge.svg)
 [![npm version](https://badge.fury.io/js/s3-serve.svg)](https://badge.fury.io/js/s3-serve)
 
-![@aws-sdk/client-s3 version](https://img.shields.io/npm/dependency-version/s3-serve/peer/@aws-sdk/client-s3?style=plastic)
 
 
 A node utility for serving files from S3. Compatible with Express, Fastify, NestJs, and more.
@@ -12,9 +11,10 @@ Small & flexible. You decide what and how to send and receive.
 
 ## Install
 ```bash
-npm install s3-serve
+npm install s3-serve --save
 ```
-this library has a *peer* dependency on `@aws-sdk/client-s3`, if not already installed, use the following:
+
+This library has a *peer* dependency on `@aws-sdk/client-s3`, if not already installed, use the following:
 ```bash
 npm install @aws-sdk/client-s3
 ```
@@ -52,8 +52,6 @@ This library aims to be flexible by giving the developer full control over the i
 
 
 ## API
-
-VSCode intellisense by itself may answer all your questions!
 
 ### **s3Get**
 
