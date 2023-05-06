@@ -28,12 +28,11 @@ app.get('/:key(*)', async (req, res) => {
   if (response.error) {
     const { error, metadata, statusCode, statusMessage } = response;
     console.error(`Error getting ${Key}`, error, metadata);
-    res.status(statusCode).send(statusMessage);
-    return;
+    return res.status(statusCode).send(statusMessage);
   }
   const { body, statusCode, headers } = response;
   res.status(statusCode).set(headers);
-  // cache if its an image
+  // cache if its media
   if (/\.(jpg|png|webp|mp4)$/.test(Key)) {
     res.set('cache-control', 'max-age=3600');
   }
