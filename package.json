@@ -32,7 +32,7 @@
     "@aws-sdk/client-s3": "^3.328.0"
   },
   "devDependencies": {
-    "@tsconfig/node16": "^1.0.3",
+    "@tsconfig/node16": "^16.1.0",
     "@types/jest": "^29.5.1",
     "@types/node": "^20.1.0",
     "@typescript-eslint/eslint-plugin": "^5.59.2",
