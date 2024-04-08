@@ -16,7 +16,7 @@ npm install s3-serve --save
 
 This library has a *peer* dependency on `@aws-sdk/client-s3`, if not already installed, use the following:
 ```bash
-npm install @aws-sdk/client-s3
+npm install @aws-sdk/client-s3 --save
 ```
 
 ## Getting Started
@@ -43,9 +43,6 @@ app.get('/:file', async (req, res) => {
 More elaborate example [at the end!](#complex-example)
 
 ## Why?
-
-There are many libraries that can help in serving file from S3, such as [s3-server](https://www.npmjs.com/package/s3-server), [s3-autoindex](https://www.npmjs.com/package/s3-autoindex),[s3-proxy](https://www.npmjs.com/package/s3-proxy), [simple-s3-proxy](https://www.npmjs.com/package/simple-s3-proxy), [s3-files](https://www.npmjs.com/package/s3-files), [s3-streams](https://www.npmjs.com/package/s3-streams) and many more.
-Unfortunately, many of them are unmaintained, and the ones who are, are very restrictive in what the allow.
 
 This library aims to be flexible by giving the developer full control over the inputs and outputs of each request, while also reducing the amount of boilerplate required when working with `@aws-sdk/s3-client`.
 
