@@ -55,7 +55,7 @@ describe('s3Get (integration, against Adobe S3Mock)', () => {
   it('200: returns the body and splits generic vs aws-specific headers', async () => {
     const key = 'happy-path.txt';
     const content = 'hello from a real s3 server';
-    await putObject(key, content, 'text/plain; charset=utf-8');
+    await putObject(key, content, 'text/plain');
 
     const { body, headers, s3Headers, statusCode, error } = await s3Get(client, {
       Bucket: BUCKET,
@@ -66,7 +66,7 @@ describe('s3Get (integration, against Adobe S3Mock)', () => {
     expect(error).toBeUndefined();
     expect(body).toBeInstanceOf(IncomingMessage);
 
-    expect(headers['content-type']).toBe('text/plain; charset=utf-8');
+    expect(headers['content-type']).toBe('text/plain');
     expect(headers['content-length']).toBe(String(Buffer.byteLength(content)));
     expect(headers['etag']).toBeDefined();
     expect(headers['last-modified']).toBeDefined();

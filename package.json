@@ -13,7 +13,7 @@
   "sideEffects": false,
   "scripts": {
     "start": "tsc --watch",
-    "build": "tsc",
+    "build": "tsc --build",
     "prepublishOnly": "npm run build",
     "test": "vitest run --coverage",
     "test:watch": "vitest",
