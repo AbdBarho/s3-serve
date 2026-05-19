@@ -1,7 +1,7 @@
 import { S3Client } from '@aws-sdk/client-s3';
 import Express from 'express';
 import dotenv from 'dotenv';
-import { s3Get, extractGetArgs } from '../build/index.js';
+import { s3Get, extractGetArgs } from '../dist/index.mjs';
 
 dotenv.config();
 

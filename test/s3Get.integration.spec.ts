@@ -9,13 +9,14 @@ const S3MOCK_IMAGE = 'adobe/s3mock:5.0.0';
 const S3MOCK_HTTP_PORT = 9090;
 const BUCKET = 'test-bucket';
 
-const streamToString = (stream: IncomingMessage): Promise<string> =>
-  new Promise((resolve, reject) => {
+function streamToString(stream: IncomingMessage): Promise<string> {
+  return new Promise((resolve, reject) => {
     const chunks: Buffer[] = [];
     stream.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
     stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf-8')));
     stream.on('error', reject);
   });
+}
 
 describe('s3Get (integration, against Adobe S3Mock)', () => {
   let container: StartedTestContainer;
@@ -45,12 +46,12 @@ describe('s3Get (integration, against Adobe S3Mock)', () => {
     await container?.stop();
   });
 
-  const putObject = async (key: string, body: string, contentType = 'text/plain'): Promise<string> => {
+  async function putObject(key: string, body: string, contentType = 'text/plain'): Promise<string> {
     const response = await client.send(
       new PutObjectCommand({ Bucket: BUCKET, Key: key, Body: body, ContentType: contentType }),
     );
     return response.ETag as string;
-  };
+  }
 
   it('200: returns the body and splits generic vs aws-specific headers', async () => {
     const key = 'happy-path.txt';

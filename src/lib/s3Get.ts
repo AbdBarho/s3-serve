@@ -1,8 +1,8 @@
-import { GetObjectCommand, GetObjectCommandInput, S3Client, S3ServiceException } from '@aws-sdk/client-s3';
-import type { ResponseMetadata } from '@aws-sdk/types';
-import { IncomingHttpHeaders, IncomingMessage } from 'http';
-import { splitResponseHeaders, HEADER_TO_PARAM, valueToType } from './headers';
-import { S3Response } from './S3Response';
+import { GetObjectCommand, type GetObjectCommandInput, S3Client, S3ServiceException } from "@aws-sdk/client-s3";
+import type { ResponseMetadata } from "@aws-sdk/types";
+import { type IncomingHttpHeaders, IncomingMessage } from "http";
+import { splitResponseHeaders, HEADER_TO_PARAM, valueToType } from "./headers.ts";
+import type { S3Response } from "./S3Response.ts";
 
 /**
  * Get a file from S3
@@ -17,7 +17,7 @@ import { S3Response } from './S3Response';
  * @returns response object, see {@link S3Response} for more info on the contents and usage.
  *
  */
-export const s3Get = async (client: S3Client, options: GetObjectCommandInput): Promise<S3Response> => {
+export async function s3Get(client: S3Client, options: GetObjectCommandInput): Promise<S3Response> {
   let body: unknown;
   let metadata: ResponseMetadata;
   let error: S3ServiceException | undefined;
@@ -37,13 +37,21 @@ export const s3Get = async (client: S3Client, options: GetObjectCommandInput): P
   }
 
   if (!(body instanceof IncomingMessage) || body.statusCode === undefined) {
-    throw new Error('s3-serve: the S3 response body is not a readable HTTP message');
+    throw new Error("s3-serve: the S3 response body is not a readable HTTP message");
   }
 
   const { statusCode, statusMessage, headers: rawHeaders } = body;
   const { headers, s3Headers } = splitResponseHeaders(rawHeaders);
-  return { body, statusCode, statusMessage: statusMessage ?? '', headers, s3Headers, metadata, error };
-};
+  return {
+    body,
+    statusCode,
+    statusMessage: statusMessage ?? "",
+    headers,
+    s3Headers,
+    metadata,
+    error,
+  };
+}
 
 /**
  * Extracts relevant headers and convert them to be compatible with {@link GetObjectCommandInput}
@@ -62,7 +70,7 @@ export const s3Get = async (client: S3Client, options: GetObjectCommandInput): P
  * @param headers headers of an incoming request, usually from a browser.
  * @returns object containing addition parameters that could be passed to {@link s3Get}
  */
-export const extractGetArgs = (headers: IncomingHttpHeaders): Partial<GetObjectCommandInput> => {
+export function extractGetArgs(headers: IncomingHttpHeaders): Partial<GetObjectCommandInput> {
   const output: Record<string, any> = {};
   for (const [key, value] of Object.entries(headers)) {
     const paramName = HEADER_TO_PARAM[key.toLowerCase()];
@@ -71,4 +79,4 @@ export const extractGetArgs = (headers: IncomingHttpHeaders): Partial<GetObjectC
     }
   }
   return output;
-};
+}

@@ -19,11 +19,12 @@ const argumentHeaders = {
   'if-unmodified-since': '2022-01-01T00:00:00.130Z',
 };
 
-const lowerCase = (obj: any) =>
-  Object.keys(obj).reduce((prev, curr) => {
+function lowerCase(obj: any) {
+  return Object.keys(obj).reduce((prev, curr) => {
     prev[curr.toLowerCase()] = obj[curr];
     return prev;
   }, {} as any);
+}
 
 describe('Headers', () => {
   describe('Split Response Headers', () => {

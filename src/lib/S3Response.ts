@@ -1,6 +1,6 @@
-import type { ResponseMetadata } from '@aws-sdk/types';
-import type { IncomingMessage } from 'http';
-import type { Headers } from './headers';
+import type { ResponseMetadata } from "@aws-sdk/types";
+import type { IncomingMessage } from "http";
+import type { Headers } from "./headers.ts";
 
 export interface S3Response {
   /**

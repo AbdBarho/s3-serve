@@ -1,24 +1,16 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "lib": ["esnext"],
+    "target": "ESNext",
+    "lib": ["ESNext"],
     "types": ["node"],
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "strict": true,
-    "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-
-    "noImplicitAny": true,
-    "preserveConstEnums": true,
-    "sourceMap": true,
-    "rootDir": "./src",
-    "outDir": "./build",
-    "declaration": true,
-    "declarationMap": true,
-    "preserveWatchOutput": true
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.spec.ts", "build/**/*"]
+  "include": ["src/**/*.ts", "tsdown.config.ts", "vitest.config.ts", "vitest.integration.config.ts"]
 }
