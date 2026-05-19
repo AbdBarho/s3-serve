@@ -1,6 +1,6 @@
 {
   "name": "s3-serve",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "license": "MIT",
   "description": "A utility for serving files from S3",
   "author": "Abdullah Barhoum <https://github.com/AbdBarho>",
@@ -16,7 +16,8 @@
     "build": "tsc",
     "prepublishOnly": "npm run build",
     "test": "vitest run --coverage",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:integration": "vitest run --config vitest.integration.config.ts --coverage"
   },
   "keywords": [
     "s3",
@@ -39,8 +40,8 @@
     "eslint": "^10.4.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
-    "nock": "^14.0.15",
     "prettier": "^3.8.3",
+    "testcontainers": "^12.0.0",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.59.4",
     "vitest": "^4.1.6"
