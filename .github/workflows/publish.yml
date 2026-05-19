@@ -19,5 +19,8 @@ jobs:
           package-manager-cache: false # never use caching in release builds
       - run: npm install -g npm@latest
       - run: npm ci
+      - run: npm run build
+      - run: npm run typecheck
       - run: npm test
+      - run: npm run test:integration
       - run: npm publish

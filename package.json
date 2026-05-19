@@ -1,6 +1,6 @@
 {
   "name": "s3-serve",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "license": "MIT",
   "description": "A utility for serving files from S3",
   "author": "Abdullah Barhoum <https://github.com/AbdBarho>",
@@ -8,15 +8,22 @@
     "type": "git",
     "url": "https://github.com/AbdBarho/s3-serve.git"
   },
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
   "sideEffects": false,
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "start": "tsc --watch",
-    "build": "tsc",
+    "start": "tsdown --watch",
+    "build": "tsdown",
+    "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run build",
     "test": "vitest run --coverage",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:integration": "vitest run --config vitest.integration.config.ts --coverage"
   },
   "keywords": [
     "s3",
@@ -26,11 +33,15 @@
     "fastify",
     "nestjs"
   ],
+  "prettier": {
+    "printWidth": 120
+  },
   "engines": {
     "node": ">=22"
   },
   "peerDependencies": {
-    "@aws-sdk/client-s3": "^3.1049.0"
+    "@aws-sdk/client-s3": "^3.1049.0",
+    "@aws-sdk/types": "*"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -39,8 +50,9 @@
     "eslint": "^10.4.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
-    "nock": "^14.0.15",
     "prettier": "^3.8.3",
+    "testcontainers": "^12.0.0",
+    "tsdown": "^0.22.0",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.59.4",
     "vitest": "^4.1.6"

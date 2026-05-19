@@ -1,7 +1,7 @@
 import { S3Client } from '@aws-sdk/client-s3';
 import Express from 'express';
 import dotenv from 'dotenv';
-import { s3Get, extractGetArgs } from '../build/index.js';
+import { s3Get, extractGetArgs } from '../dist/index.mjs';
 
 dotenv.config();
 
@@ -16,7 +16,6 @@ const client = new S3Client({
 const Bucket = process.env.BUCKET;
 
 app.get('/*key', async (req, res) => {
-  // Express 5 wildcard params resolve to an array of path segments.
   let Key = req.params.key.join('/');
   if (Key === '') {
     Key = 'index.html';

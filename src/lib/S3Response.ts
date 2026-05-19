@@ -1,6 +1,6 @@
-import type { ResponseMetadata } from '@aws-sdk/types';
-import type { IncomingMessage } from 'http';
-import type { Headers } from './headers';
+import type { ResponseMetadata } from "@aws-sdk/types";
+import type { IncomingMessage } from "http";
+import type { Headers } from "./headers.ts";
 
 export interface S3Response {
   /**
@@ -76,14 +76,14 @@ export interface S3Response {
   /**
    * The 3-digit HTTP response status code. e.g. `404`.
    *
-   * The value comes directly from the [IncomingMessage](https://nodejs.org/api/http.html#messagestatuscode) of the {@link body}
+   * The value comes directly from the HTTP response received from S3.
    */
   statusCode: number;
   /**
    * A string indicating the status of the response (`'OK'`, `'Access Denied'`, etc...).
    * Useful for informing the requester of errors without exposing the internals.
    *
-   * The value comes directly from the [IncomingMessage](https://nodejs.org/api/http.html#messagestatusmessage) of the {@link body}
+   * The value comes directly from the HTTP response received from S3.
    *
    * Fastify example:
    * ```js
