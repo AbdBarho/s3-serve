@@ -34,6 +34,9 @@ describe('s3Get (integration, against Adobe S3Mock)', () => {
       region: 'eu-central-1',
       forcePathStyle: true,
       credentials: { accessKeyId: 'test', secretAccessKey: 'test' },
+      // S3Mock returns the full-object checksum on partial (206) responses, which
+      // the SDK would otherwise fail to validate against the ranged bytes.
+      responseChecksumValidation: 'WHEN_REQUIRED',
     });
   });
 

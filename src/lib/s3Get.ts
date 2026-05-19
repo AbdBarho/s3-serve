@@ -1,24 +1,8 @@
-import { GetObjectCommand, GetObjectCommandInput, S3Client } from '@aws-sdk/client-s3';
+import { GetObjectCommand, GetObjectCommandInput, S3Client, S3ServiceException } from '@aws-sdk/client-s3';
+import type { ResponseMetadata } from '@aws-sdk/types';
 import { IncomingHttpHeaders, IncomingMessage } from 'http';
-import { splitResponseHeaders, HEADER_TO_PARAM, Headers, valueToType } from './headers';
+import { splitResponseHeaders, HEADER_TO_PARAM, valueToType } from './headers';
 import { S3Response } from './S3Response';
-
-/**
- * The transport-level HTTP response exposed by the AWS SDK
- * (`@smithy/protocol-http`'s `HttpResponse`).
- *
- * `s3-serve` reads the response status and headers from this object instead of
- * from the deserialized command output: the command output only exposes a typed
- * subset of headers, and the way responses (including streaming bodies) are
- * deserialized changed in `@aws-sdk/client-s3` 3.931.0 with the move to
- * schema-based serde. This transport-level contract is stable across that change.
- */
-interface RawHttpResponse {
-  statusCode: number;
-  reason?: string;
-  headers: Headers;
-  body: IncomingMessage;
-}
 
 /**
  * Get a file from S3
@@ -34,41 +18,31 @@ interface RawHttpResponse {
  *
  */
 export const s3Get = async (client: S3Client, options: GetObjectCommandInput): Promise<S3Response> => {
-  const command = new GetObjectCommand(options);
+  let body: unknown;
+  let metadata: ResponseMetadata;
+  let error: S3ServiceException | undefined;
 
-  // Capture the raw HTTP response. A `deserialize`-step middleware observes the
-  // transport-level response, which is independent of how the command output is
-  // (de)serialized, so it is not affected by the SDK's schema-serde changes.
-  let captured: RawHttpResponse | undefined;
-  command.middlewareStack.add(
-    (next: any) => async (args: any) => {
-      const result = await next(args);
-      captured = result.response;
-      return result;
-    },
-    { step: 'deserialize', priority: 'low', name: 's3ServeCaptureResponse' }
-  );
-
-  let httpResponse: RawHttpResponse;
-  let metadata, error;
   try {
-    const response = await client.send(command);
-    // The middleware always runs when `send` resolves.
-    httpResponse = captured as RawHttpResponse;
+    const response = await client.send(new GetObjectCommand(options));
+    body = response.Body;
     metadata = response.$metadata;
-  } catch (exception: any) {
-    if (!exception.$response) {
+    error = undefined;
+  } catch (exception) {
+    if (!(exception instanceof S3ServiceException) || !exception.$response) {
       throw exception;
     }
-    // `$response` is itself the `HttpResponse` for the failed request.
-    httpResponse = exception.$response;
+    body = exception.$response.body;
     metadata = exception.$metadata;
     error = exception;
   }
 
-  const { body, statusCode, reason, headers: baseHeaders } = httpResponse;
-  const { headers, s3Headers } = splitResponseHeaders(baseHeaders);
-  return { body, statusCode, headers, s3Headers, statusMessage: reason ?? '', metadata, error };
+  if (!(body instanceof IncomingMessage) || body.statusCode === undefined) {
+    throw new Error('s3-serve: the S3 response body is not a readable HTTP message');
+  }
+
+  const { statusCode, statusMessage, headers: rawHeaders } = body;
+  const { headers, s3Headers } = splitResponseHeaders(rawHeaders);
+  return { body, statusCode, statusMessage: statusMessage ?? '', headers, s3Headers, metadata, error };
 };
 
 /**
@@ -91,7 +65,7 @@ export const s3Get = async (client: S3Client, options: GetObjectCommandInput): P
 export const extractGetArgs = (headers: IncomingHttpHeaders): Partial<GetObjectCommandInput> => {
   const output: Record<string, any> = {};
   for (const [key, value] of Object.entries(headers)) {
-    const paramName = (HEADER_TO_PARAM as Headers)[key.toLowerCase()];
+    const paramName = HEADER_TO_PARAM[key.toLowerCase()];
     if (paramName) {
       output[paramName] = valueToType(paramName, value);
     }

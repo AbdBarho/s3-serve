@@ -16,7 +16,6 @@ const client = new S3Client({
 const Bucket = process.env.BUCKET;
 
 app.get('/*key', async (req, res) => {
-  // Express 5 wildcard params resolve to an array of path segments.
   let Key = req.params.key.join('/');
   if (Key === '') {
     Key = 'index.html';
