@@ -1,8 +1,19 @@
-import { GetObjectCommand, type GetObjectCommandInput, S3Client, S3ServiceException } from "@aws-sdk/client-s3";
-import type { ResponseMetadata } from "@aws-sdk/types";
-import { type IncomingHttpHeaders, IncomingMessage } from "http";
-import { splitResponseHeaders, HEADER_TO_PARAM, valueToType } from "./headers.ts";
-import type { S3Response } from "./S3Response.ts";
+import {
+  GetObjectCommand,
+  type GetObjectCommandInput,
+  type GetObjectCommandOutput,
+  S3Client,
+  S3ServiceException,
+} from '@aws-sdk/client-s3';
+import type { DeserializeMiddleware, HttpResponse, ResponseMetadata } from '@aws-sdk/types';
+import type { IncomingHttpHeaders } from 'http';
+import { Readable } from 'node:stream';
+import { splitResponseHeaders, HEADER_TO_PARAM, valueToType } from './headers.ts';
+import type { S3Response } from './S3Response.ts';
+
+function isHttpResponse(response: unknown): response is HttpResponse {
+  return typeof response === 'object' && response !== null && 'statusCode' in response && 'headers' in response;
+}
 
 /**
  * Get a file from S3
@@ -18,12 +29,28 @@ import type { S3Response } from "./S3Response.ts";
  *
  */
 export async function s3Get(client: S3Client, options: GetObjectCommandInput): Promise<S3Response> {
-  let body: unknown;
+  const command = new GetObjectCommand(options);
+
+  // The status, status message and headers must come from the raw HTTP response, not the
+  // body: the SDK may wrap the body in a checksum-validating stream, so it is not always the
+  // underlying IncomingMessage. On success the raw response is only reachable via middleware;
+  // on error it is exposed on the exception. Both are the same `HttpResponse` shape.
+  let httpResponse: HttpResponse | undefined;
+  const captureResponse: DeserializeMiddleware<GetObjectCommandInput, GetObjectCommandOutput> = next => async args => {
+    const result = await next(args);
+    if (isHttpResponse(result.response)) {
+      httpResponse = result.response;
+    }
+    return result;
+  };
+  command.middlewareStack.add(captureResponse, { step: 'deserialize', name: 's3ServeCaptureResponse' });
+
+  let body: GetObjectCommandOutput['Body'];
   let metadata: ResponseMetadata;
   let error: S3ServiceException | undefined;
 
   try {
-    const response = await client.send(new GetObjectCommand(options));
+    const response = await client.send(command);
     body = response.Body;
     metadata = response.$metadata;
     error = undefined;
@@ -31,21 +58,25 @@ export async function s3Get(client: S3Client, options: GetObjectCommandInput): P
     if (!(exception instanceof S3ServiceException) || !exception.$response) {
       throw exception;
     }
+    httpResponse = exception.$response;
     body = exception.$response.body;
     metadata = exception.$metadata;
     error = exception;
   }
 
-  if (!(body instanceof IncomingMessage) || body.statusCode === undefined) {
-    throw new Error("s3-serve: the S3 response body is not a readable HTTP message");
+  if (!httpResponse) {
+    throw new Error('s3-serve: could not read the raw S3 HTTP response');
+  }
+  if (!(body instanceof Readable)) {
+    throw new Error('s3-serve: the S3 response body is not a readable stream');
   }
 
-  const { statusCode, statusMessage, headers: rawHeaders } = body;
+  const { statusCode, reason, headers: rawHeaders } = httpResponse;
   const { headers, s3Headers } = splitResponseHeaders(rawHeaders);
   return {
     body,
     statusCode,
-    statusMessage: statusMessage ?? "",
+    statusMessage: reason ?? '',
     headers,
     s3Headers,
     metadata,
