@@ -1,13 +1,14 @@
-import type { ResponseMetadata } from "@aws-sdk/types";
-import type { IncomingMessage } from "http";
-import type { Headers } from "./headers.ts";
+import type { ResponseMetadata } from '@aws-sdk/types';
+import type { Readable } from 'node:stream';
+import type { Headers } from './headers.ts';
 
 export interface S3Response {
   /**
-   * The body of the S3 response, this is the raw
-   * [IncomingMessage](https://nodejs.org/api/http.html#class-httpincomingmessage)
-   * received by the `S3Client`. It inherits from
-   * [stream.Readable](https://nodejs.org/api/stream.html#class-streamreadable)
+   * The body of the S3 response, as a
+   * [stream.Readable](https://nodejs.org/api/stream.html#class-streamreadable).
+   * It is the body stream returned by the `S3Client` (the raw
+   * [IncomingMessage](https://nodejs.org/api/http.html#class-httpincomingmessage),
+   * or a checksum-validating wrapper around it when the response carries a checksum),
    * and can be piped directly to an output stream.
    *
    * With express, you can pipe the body to the `Response` object
@@ -43,7 +44,7 @@ export interface S3Response {
    * Note: in case of non-2xx `statusCode`, the `S3Client` will consume the contents
    * of the stream (to parse the XML error response), in this case the body will be empty.
    */
-  body: IncomingMessage;
+  body: Readable;
   /**
    * An object containing generic response headers received from S3,
    * like `content-type`, `content-length`, etc..

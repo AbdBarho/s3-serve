@@ -1,6 +1,6 @@
 import { GenericContainer, StartedTestContainer, Wait } from 'testcontainers';
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import { IncomingMessage } from 'http';
+import { Readable } from 'node:stream';
 import { s3Get, extractGetArgs } from '../src/lib/s3Get';
 
 // Runs s3Get against Adobe S3Mock in a container. Requires Docker.
@@ -9,10 +9,10 @@ const S3MOCK_IMAGE = 'adobe/s3mock:5.0.0';
 const S3MOCK_HTTP_PORT = 9090;
 const BUCKET = 'test-bucket';
 
-function streamToString(stream: IncomingMessage): Promise<string> {
+function streamToString(stream: Readable): Promise<string> {
   return new Promise((resolve, reject) => {
     const chunks: Buffer[] = [];
-    stream.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
+    stream.on('data', chunk => chunks.push(Buffer.from(chunk)));
     stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf-8')));
     stream.on('error', reject);
   });
@@ -48,7 +48,7 @@ describe('s3Get (integration, against Adobe S3Mock)', () => {
 
   async function putObject(key: string, body: string, contentType = 'text/plain'): Promise<string> {
     const response = await client.send(
-      new PutObjectCommand({ Bucket: BUCKET, Key: key, Body: body, ContentType: contentType }),
+      new PutObjectCommand({ Bucket: BUCKET, Key: key, Body: body, ContentType: contentType })
     );
     return response.ETag as string;
   }
@@ -65,7 +65,7 @@ describe('s3Get (integration, against Adobe S3Mock)', () => {
 
     expect(statusCode).toBe(200);
     expect(error).toBeUndefined();
-    expect(body).toBeInstanceOf(IncomingMessage);
+    expect(body).toBeInstanceOf(Readable);
 
     expect(headers['content-type']).toBe('text/plain');
     expect(headers['content-length']).toBe(String(Buffer.byteLength(content)));
